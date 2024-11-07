@@ -1,0 +1,124 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PROUST</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Left Sidebar -->
+        <div class="col-md-3">
+            <h3>Search M.A.S.S.I.V.E</h3>
+            <form method="POST" onsubmit="prepareFormSubmission()">
+                <!-- ID Input -->
+                <div class="form-group">
+                    <label for="id">ID (1-20000)</label>
+                    <input type="number" min="1" max="20000" class="form-control" name="id" id="id">
+                </div>
+
+                <!-- Locale Input -->
+                <div class="form-group">
+                    <label for="locale">Locale</label>
+                    <input type="text" name="locale" id="locale" class="form-control"
+                           onkeyup="fetchOptions('locale', this)" onkeydown="handleEnterKey(event, 'locale')"
+                           onfocus="handleFocus('locale', this)" onblur="handleBlur('locale')" >
+                    <div id="locale-suggestions" class="suggestions"></div>
+                    <div id="locale-choices" class="selected-choices mt-2"></div>
+                </div>
+
+                <!-- Scenario Input -->
+                <div class="form-group">
+                    <label for="scenario">Scenario</label>
+                    <input type="text" name="scenario" id="scenario" class="form-control"
+                           onkeyup="fetchOptions('scenario', this)" onkeydown="handleEnterKey(event, 'scenario')"
+                           onfocus="handleFocus('scenario', this)" onblur="handleBlur('scenario')" >
+                    <div id="scenario-suggestions" class="suggestions"></div>
+                    <div id="scenario-choices" class="selected-choices mt-2"></div>
+                </div>
+
+                <!-- Intent Input -->
+                <div class="form-group">
+                    <label for="intent">Intent</label>
+                    <input type="text" name="intent" id="intent" class="form-control"
+                           onkeyup="fetchOptions('intent', this)" onkeydown="handleEnterKey(event, 'intent')"
+                           onfocus="handleFocus('intent', this)" onblur="handleBlur('intent')" >
+                    <div id="intent-suggestions" class="suggestions"></div>
+                    <div id="intent-choices" class="selected-choices mt-2"></div>
+                </div>
+
+                <!-- Slots Input -->
+                <div class="form-group">
+                    <label for="slots">Slots</label>
+                    <input type="text" name="slots" id="slots" class="form-control"
+                           onkeyup="fetchOptions('slots', this)" onkeydown="handleEnterKey(event, 'slots')"
+                           onfocus="handleFocus('slots', this)" onblur="handleBlur('slots')" >
+                    <div id="slots-suggestions" class="suggestions"></div>
+                    <div id="slots-choices" class="selected-choices mt-2"></div>
+                </div>
+
+                <!-- Utterance Text Input -->
+                <div class="form-group">
+                    <label for="utterance">Utterance</label>
+                    <input type="text" name="utterance" id="utterance" class="form-control">
+                </div>
+
+                <!-- Search Button -->
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+            <form action="{{ url_for('download') }}" method="POST">
+                <!-- Hidden inputs -->
+                <input type="hidden" name="id" value="{{ request.form.get('id') }}">
+                <!-- Repeat for other filters -->
+                <button type="submit" class="btn btn-success">Download CSV</button>
+            </form>
+        </div>
+
+        <!-- Right Content -->
+        <div class="col-md-9">
+            <h3>Search Results</h3>
+            {% if results %}
+                <form action="{{ url_for('download') }}" method="GET">
+                    <button type="submit" class="btn btn-success">Download CSV</button>
+                </form>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Locale</th>
+                            <th>Scenario</th>
+                            <th>Intent</th>
+                            <th>Utterance Text</th>
+                            {% for slot in selected_slots %}
+                                <th>{{ slot }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for record in results %}
+                        <tr>
+                            <td>{{ record.id }}</td>
+                            <td>{{ record.locale }}</td>
+                            <td>{{ record.scenario }}</td>
+                            <td>{{ record.intent }}</td>
+                            <td>{{ record.utterance }}</td>
+                            {% for slot in selected_slots %}
+                                <td>{{ record | getattr(slot) }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No results to display.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script src="static/js/autofill.js"></script>
+</body>
+</html>

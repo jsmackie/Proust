@@ -1,0 +1,51 @@
+/* Style the suggestions box */
+.suggestions {
+    border: 1px solid #ced4da;
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    background: white;
+    z-index: 1000;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item {
+    padding: 8px;
+    cursor: pointer;
+    color: #495057;
+}
+
+.suggestion-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Style the selected choices (tags) */
+.selected-choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding-top: 5px;
+}
+
+.choice-tag {
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.9em;
+    display: inline-flex;
+    align-items: center;
+}
+
+.choice-tag:hover {
+    background-color: #0056b3;
+}
+
+/* Override Bootstrap's default styling for small tag elements */
+.choice-tag::after {
+    content: ' ✖'; /* Adds a close symbol to indicate removability */
+    font-size: 0.75em;
+    margin-left: 5px;
+}
